@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 
 class NPC(models.Model): #######################################################
-	name = models.CharField(max_length=150)
+	name = models.CharField(max_length=75)
 	user = models.ForeignKey(User)
 
 	def __str__(self):
@@ -31,11 +31,12 @@ class Level_vote(models.Model):
 class Aspect(models.Model): ####################################################
 	ASPECT_TYPE_CHOICES = (
 		('HC', 'High Concept'),
-		('T', 'Trouble'),
-		('O', 'Other')
+		('TR', 'Trouble'),
+		('OT', 'Other')
 	)
-	text = models.CharField(max_length=150)
+	text = models.CharField(max_length=75)
 	type = models.CharField(max_length=2, choices=ASPECT_TYPE_CHOICES)
+        description = models.CharField(max_length=250)
 
 	def __str__(self):
 		return self.aspect_text
@@ -56,8 +57,8 @@ class Skill_vote(models.Model):
 	skill = models.ForeignKey(Skill)
 
 class Stunt(model.Models): #####################################################
-	name = models.CharField(max_length=100)
-	description = models.CharField(max_length=1000)
+	name = models.CharField(max_length=75)
+	description = models.CharField(max_length=500)
 
 	def __str__(self):
 		return self.stunt_name
