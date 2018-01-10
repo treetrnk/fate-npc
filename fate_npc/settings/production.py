@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'npcs.apps.NpcsConfig',
+    'apps.npcs',
+    'apps.votes',
+    'apps.comments',
 ]
 
 MIDDLEWARE = [
