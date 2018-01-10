@@ -2,66 +2,79 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.contrib.auth.models import User
 
-class NPC(models.Model): #######################################################
-	name = models.CharField(max_length=75)
-	user = models.ForeignKey(User)
+class TrackedModel(models.Model):
+    user = models.ForeignKey(User)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
 
-	def __str__(self):
-		return self.npc_name
+    class Meta:
+        abstract = True
 
-class NPC_vote(models.Model):
-	npc = models.ForeignKey(NPC)
+class Item(models.Model):
+    ITEM_TYPE_CHOICES = (
+        ('npc', 'NPC'),
+        ('level', 'Level'),
+        ('aspect', 'Aspect'),
+        ('skill', 'Skill'),
+        ('approach', 'Approach'),
+        ('stunt', 'Stunt'),
+    )
+    type = models.CharField(max_length=15)
 
-class Level(models.Model): #####################################################
-	LEVEL_CHOICES = (
-		('filler1', 'Filler - Average (+1)'),
-		('filler2', 'Filler - Fair (+2)'),
-		('filler3', 'Filler - Good (+3)'),
-		('hitter', 'Hitter'),
-		('threat', 'Threat'),
-		('boss', 'Boss'),
-		('vlm', 'Very Large Monster')
-	)
-	name = models.CharField(max_length=50)
+class NPC(TrackedModel): 
+    item = models.OneToOneField(Item)
+    name = models.CharField(max_length=75)
 
-class Level_vote(models.Model):
-	level = models.ForeignKey(Level)
+    def __str__(self):
+        return self.npc_name
 
-class Aspect(models.Model): ####################################################
-	ASPECT_TYPE_CHOICES = (
-		('HC', 'High Concept'),
-		('TR', 'Trouble'),
-		('OT', 'Other')
-	)
-	text = models.CharField(max_length=75)
-	type = models.CharField(max_length=2, choices=ASPECT_TYPE_CHOICES)
-        description = models.CharField(max_length=250)
 
-	def __str__(self):
-		return self.aspect_text
+class Level(TrackedModel): 
+    LEVEL_CHOICES = (
+    	('filler1', 'Filler - Average (+1)'),
+    	('filler2', 'Filler - Fair (+2)'),
+    	('filler3', 'Filler - Good (+3)'),
+    	('hitter', 'Hitter'),
+    	('threat', 'Threat'),
+    	('boss', 'Boss'),
+    	('vlm', 'Very Large Monster')
+    )
+    item = models.OneToOneField(Item)
+    name = models.CharField(max_length=50)
 
-class Aspect_vote(models.Model):
-	aspect = models.ForeignKey(Aspect)
+class Aspect(TrackedModel): 
+    ASPECT_TYPE_CHOICES = (
+    	('HC', 'High Concept'),
+    	('TR', 'Trouble'),
+    	('OT', 'Other')
+    )
+    item = models.OneToOneField(Item)
+    text = models.CharField(max_length=75)
+    type = models.CharField(max_length=2, choices=ASPECT_TYPE_CHOICES)
+    description = models.CharField(max_length=250)
 
-class Skill(model.Models): #####################################################
-	SKILL_TYPE_CHOICES = (
-		('skill', 'Skill'),
-		('approach', 'Approach'),
-		('custom', 'Custom')
-	)
-	name = CharField(max_length=50)
-	type = models.CharField(max_length=10, choices=SKILL_TYPE_CHOICES)
+    def __str__(self):
+    	return self.aspect_text
 
-class Skill_vote(models.Model):
-	skill = models.ForeignKey(Skill)
+class Skill(TrackedModel):
+    SKILL_TYPE_CHOICES = (
+        ('skill', 'Skill'),
+        ('approach', 'Approach'),
+    )
+    item = models.OneToOneField(Item)
+    name = models.CharField(max_length=50)
+    type = models.CharField(max_length=15, choices=SKILL_TYPE_CHOICES)
 
-class Stunt(model.Models): #####################################################
-	name = models.CharField(max_length=75)
-	description = models.CharField(max_length=500)
+    def __str__(self):
+    	return self.skill_name
 
-	def __str__(self):
-		return self.stunt_name
+class Stunt(TrackedModel):
+    item = models.OneToOneField(Item)
+    name = models.CharField(max_length=75)
+    description = models.CharField(max_length=500)
 
-class Stunt_vote(models.Model):
-	stunt = models.ForeignKey(Stunt)
+    def __str__(self):
+    	return self.stunt_name
+
